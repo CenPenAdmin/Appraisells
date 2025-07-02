@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head>
+  <meta charset="UTF-8"><title>Live Auction</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    body{font-family:sans-serif;text-align:center;padding:20px;}
+    #bid-list{margin-top:20px;height:200px;overflow:auto;border:1px solid #ccc;}
+    .btn{padding:10px 20px;cursor:pointer;}
+  </style>
+  <script>
+    Pi.init({version:"2.0", sandbox:true});
+    let ws=new WebSocket("wss://YOUR_BACKEND_URL"); // you'll need a backend
+    ws.onmessage=e=> {
+      let data=JSON.parse(e.data);
+      document.getElementById('current').innerText=data.highest + " Pi";
+      let li=document.createElement('li');
+      li.innerText=`${data.user}: ${data.amount} Pi`;
+      document.getElementById('bid-list').append(li);
+    };
+    function placeBid(){
+      let amt=prompt("Enter bid amount (Pi):");
+      ws.send(JSON.stringify({type:"bid", amount:amt}));
+      // backend should validate higher than current and notify others
+    }
+  </script>
+</head><body>
+  <h1>Live Auction</h1>
+  <p>Highest Bid: <span id="current">0 Pi</span></p>
+  <button class="btn" onclick="placeBid()">Place Bid</button>
+  <ul id="bid-list"></ul>
+</body></html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Appraisells</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #663399;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+      border-radius: 60px;
+    }
+
+    #main-img {
+      width: 300px;
+      height: auto;
+      margin-top: 40px;
+      cursor: pointer;
+      border: 4px solid #ccc;
+      border-radius: 12px;
+      transition: 0.3s;
+    }
+
+    #main-img:hover {
+      border-color: #663399;
+    }
+
+    #userInfo {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="btn" onclick="login()">Login / Sign Up</button>
+    <h2>Appraisells</h2>
+    <button class="btn" onclick="gotoAuction()">Go To Live Auction</button>
+  </header>
+
+  <img id="main-img" src="ARTWORK_MAIN.jpg" alt="Artwork" onclick="location.href='gallery.html'">
+
+  <div id="userInfo"></div>
+
+  <script>
+    // Initialize Pi SDK
+    Pi.init({
+      version: "2.0",
+      sandbox: true // Set to false in production
+    });
+
+    let user = null;
+
+    function login() {
+      Pi.authenticate(['username', 'payments'])
+        .then(auth => {
+          user = auth.user;
+          document.getElementById('userInfo').innerText = `Welcome, ${user.username}`;
+          // Optional: Save session info to localStorage
+          localStorage.setItem("piUser", user.username);
+        })
+        .catch(err => {
+          console.error("Login failed:", err);
+          alert("Login failed. Please try again in the Pi Browser.");
+        });
+    }
+
+    function gotoAuction() {
+      if (!user && !localStorage.getItem("piUser")) {
+        alert("You must login first to access the live auction.");
+        return;
+      }
+      window.location.href = "auction.html";
+    }
+  </script>
+</body>
+</html>
+
