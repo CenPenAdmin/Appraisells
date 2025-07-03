@@ -1,96 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>User Profile</title>
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <meta charset="UTF-8" />
+  <title>Complete Your Profile</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 30px;
-      background: #f8f8f8;
-    }
-    h1 {
-      color: #663399;
+      margin: 40px;
+      background-color: #f7f7f7;
     }
     form {
-      max-width: 500px;
+      max-width: 400px;
       margin: auto;
-      background: white;
+      background: #fff;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
     }
     input, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      margin-bottom: 12px;
+      padding: 8px;
+      font-size: 1em;
     }
     button {
-      background: #663399;
+      background-color: #663399;
       color: white;
-      padding: 10px 20px;
+      padding: 10px;
       border: none;
+      width: 100%;
+      font-size: 1em;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
+    }
+    #status {
+      text-align: center;
+      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
 <body>
 
-<h1>Welcome to Appraisells</h1>
-<p>Complete your profile to bid and win art auctions:</p>
+  <h2 style="text-align:center;">Complete Your Profile</h2>
+  <form id="profileForm">
+    <input type="text" name="fullName" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email Address" required />
+    <input type="text" name="wallet" placeholder="Pi Wallet Address" required />
+    <textarea name="notes" placeholder="Notes or Address"></textarea>
+    <button type="submit">Save Profile</button>
+  </form>
 
-<form id="userForm">
-  <label>Full Name:</label>
-  <input type="text" id="fullName" required>
+  <p id="status"></p>
 
-  <label>Email Address:</label>
-  <input type="email" id="email" required>
+  <script>
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
 
-  <label>Shipping Address:</label>
-  <textarea id="address" required></textarea>
+      try {
+        const res = await fetch("http://localhost:3000/save-profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
 
-  <label>Pi Wallet Address:</label>
-  <input type="text" id="wallet" required>
-
-  <button type="submit">Save Profile</button>
-</form>
-
-<script>
-  // Initialize Pi SDK
-  Pi.init({ version: "2.0", sandbox: true });
-
-  // Save form data locally or send to backend
-  document.getElementById("userForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const profileData = {
-      fullName: document.getElementById("fullName").value,
-      email: document.getElementById("email").value,
-      address: document.getElementById("address").value,
-      wallet: document.getElementById("wallet").value
-    };
-
-    // For now, store locally – later, send to backend
-    localStorage.setItem("userProfile", JSON.stringify(profileData));
-    alert("Profile saved! You can now bid on auctions.");
-  });
-
-  // Optional: Pre-fill if already saved
-  window.onload = function() {
-    const saved = JSON.parse(localStorage.getItem("userProfile"));
-    if (saved) {
-      document.getElementById("fullName").value = saved.fullName || "";
-      document.getElementById("email").value = saved.email || "";
-      document.getElementById("address").value = saved.address || "";
-      document.getElementById("wallet").value = saved.wallet || "";
-    }
-  };
-</script>
+        const result = await res.json();
+        document.getElementById("status").innerText = result.message || "Saved successfully!";
+      } catch (err) {
+        console.error("Error:", err);
+        document.getElementById("status").innerText = "Failed to save. Please try again.";
+      }
+    });
+  </script>
 
 </body>
 </html>
