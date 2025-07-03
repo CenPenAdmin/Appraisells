@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f8f8f8;
+    }
+    h1 {
+      color: #663399;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background: #663399;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Welcome to Appraisells</h1>
+<p>Complete your profile to bid and win art auctions:</p>
+
+<form id="userForm">
+  <label>Full Name:</label>
+  <input type="text" id="fullName" required>
+
+  <label>Email Address:</label>
+  <input type="email" id="email" required>
+
+  <label>Shipping Address:</label>
+  <textarea id="address" required></textarea>
+
+  <label>Pi Wallet Address:</label>
+  <input type="text" id="wallet" required>
+
+  <button type="submit">Save Profile</button>
+</form>
+
+<script>
+  // Initialize Pi SDK
+  Pi.init({ version: "2.0", sandbox: true });
+
+  // Save form data locally or send to backend
+  document.getElementById("userForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const profileData = {
+      fullName: document.getElementById("fullName").value,
+      email: document.getElementById("email").value,
+      address: document.getElementById("address").value,
+      wallet: document.getElementById("wallet").value
+    };
+
+    // For now, store locally – later, send to backend
+    localStorage.setItem("userProfile", JSON.stringify(profileData));
+    alert("Profile saved! You can now bid on auctions.");
+  });
+
+  // Optional: Pre-fill if already saved
+  window.onload = function() {
+    const saved = JSON.parse(localStorage.getItem("userProfile"));
+    if (saved) {
+      document.getElementById("fullName").value = saved.fullName || "";
+      document.getElementById("email").value = saved.email || "";
+      document.getElementById("address").value = saved.address || "";
+      document.getElementById("wallet").value = saved.wallet || "";
+    }
+  };
+</script>
+
+</body>
+</html>
