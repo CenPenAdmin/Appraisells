@@ -9,7 +9,7 @@
   </style>
   <script>
     Pi.init({version:"2.0", sandbox:true});
-    let ws=new WebSocket("wss://YOUR_BACKEND_URL"); // you'll need a backend
+    let ws=new WebSocket("ws://localhost:3000"); // you'll need a backend
     ws.onmessage=e=> {
       let data=JSON.parse(e.data);
       document.getElementById('current').innerText=data.highest + " Pi";
