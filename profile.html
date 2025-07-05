@@ -2,41 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Complete Your Profile</title>
+  <title>Complete Profile</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f7f7f7;
+      background: #f7f7f7;
+      padding: 40px;
     }
     form {
       max-width: 400px;
       margin: auto;
-      background: #fff;
+      background: white;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px #ccc;
     }
     input, textarea {
       width: 100%;
-      margin-bottom: 12px;
-      padding: 8px;
-      font-size: 1em;
+      margin: 10px 0;
+      padding: 10px;
     }
     button {
-      background-color: #663399;
+      background: #663399;
       color: white;
       padding: 10px;
       border: none;
-      width: 100%;
-      font-size: 1em;
       border-radius: 6px;
       cursor: pointer;
+      width: 100%;
     }
     #status {
       text-align: center;
-      font-weight: bold;
       color: green;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -45,9 +43,9 @@
   <h2 style="text-align:center;">Complete Your Profile</h2>
   <form id="profileForm">
     <input type="text" name="fullName" placeholder="Full Name" required />
-    <input type="email" name="email" placeholder="Email Address" required />
+    <input type="email" name="email" placeholder="Email" required />
     <input type="text" name="wallet" placeholder="Pi Wallet Address" required />
-    <textarea name="notes" placeholder="Notes or Address"></textarea>
+    <textarea name="notes" placeholder="Notes / Address"></textarea>
     <button type="submit">Save Profile</button>
   </form>
 
@@ -56,24 +54,21 @@
   <script>
     document.getElementById("profileForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
+      const data = Object.fromEntries(new FormData(e.target));
 
       try {
         const res = await fetch("http://localhost:3000/save-profile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(data)
         });
-
         const result = await res.json();
-        document.getElementById("status").innerText = result.message || "Saved successfully!";
+        document.getElementById("status").innerText = result.message || "Saved!";
+        setTimeout(() => window.location.href = "index.html", 1500);
       } catch (err) {
-        console.error("Error:", err);
-        document.getElementById("status").innerText = "Failed to save. Please try again.";
+        document.getElementById("status").innerText = "Error saving data.";
       }
     });
   </script>
-
 </body>
 </html>
