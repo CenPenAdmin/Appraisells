@@ -19,22 +19,37 @@
   <ul id="bid-list"></ul>
 
   <script>
-    Pi.init({ version: "2.0", sandbox: true });
-    let ws = new WebSocket("ws://localhost:3000");
+  // Load user from localStorage
+  const storedUser = localStorage.getItem("piUser");
 
-    ws.onmessage = e => {
-      const data = JSON.parse(e.data);
-      document.getElementById('current').innerText = data.highest + " Pi";
-      const li = document.createElement('li');
-      li.innerText = `${data.user}: ${data.amount} Pi`;
-      document.getElementById('bid-list').appendChild(li);
-    };
+  if (storedUser) {
+    const user = JSON.parse(storedUser);
+    console.log("Logged in user:", user.username);
+    document.getElementById("userInfo").innerText = `Welcome, ${user.username}`;
+  } else {
+    alert("You must login through the Pi Browser first.");
+    window.location.href = "index.html"; // Redirect to login
+  }
 
-    function placeBid() {
-      const user = JSON.parse(localStorage.getItem("piUser"))?.username || "Anonymous";
-      const amount = prompt("Enter bid amount in Pi:");
-      ws.send(JSON.stringify({ type: "bid", amount, user }));
-    }
-  </script>
+  Pi.init({ version: "2.0", sandbox: true });
+
+  let ws = new WebSocket("ws://localhost:3000");
+
+  ws.onmessage = e => {
+    const data = JSON.parse(e.data);
+    document.getElementById('current').innerText = data.highest + " Pi";
+    const li = document.createElement('li');
+    li.innerText = `${data.user}: ${data.amount} Pi`;
+    document.getElementById('bid-list').appendChild(li);
+  };
+
+  function placeBid() {
+    const user = JSON.parse(localStorage.getItem("piUser"))?.username || "Anonymous";
+    const amount = prompt("Enter bid amount in Pi:");
+    if (!amount) return;
+    ws.send(JSON.stringify({ type: "bid", amount, user }));
+  }
+</script>
+
 </body>
 </html>
