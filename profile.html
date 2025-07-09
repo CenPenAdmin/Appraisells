@@ -57,7 +57,7 @@
       const data = Object.fromEntries(new FormData(e.target));
 
       try {
-        const res = await fetch("http://localhost:3000/save-profile", {
+        const res = await fetch("https://appraisells-backend.onrender.com/save-profile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
