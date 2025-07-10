@@ -1,55 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Auction</title>
+  <title>Live Auction - Appraisells</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    .btn { padding: 10px 20px; cursor: pointer; }
-    #bid-list { margin-top: 20px; height: 200px; overflow: auto; border: 1px solid #ccc; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 30px;
+      text-align: center;
+    }
+    .auction-box {
+      background: white;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px #ccc;
+      border-radius: 10px;
+    }
+    .btn {
+      background: #663399;
+      color: white;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      font-size: 1em;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    ul#bids {
+      list-style: none;
+      padding: 0;
+      max-height: 200px;
+      overflow-y: scroll;
+      text-align: left;
+    }
+    li {
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
+  <div class="auction-box">
+    <h2>Live Auction</h2>
+    <p><strong>Auction Ends In:</strong> <span id="timer"></span></p>
+    <p><strong>Current Highest Bid:</strong> <span id="highest">0 Pi</span> by <span id="leader">None</span></p>
 
-  <div id="userInfo"></div> <!-- Display Pi username here -->
-  <h1>Live Auction</h1>
-  <p>Highest Bid: <span id="current">0 Pi</span></p>
-  <button class="btn" onclick="placeBid()">Place Bid</button>
-  <ul id="bid-list"></ul>
+    <button class="btn" onclick="placeBid()">Place a Bid</button>
+
+    <h3>Live Bids:</h3>
+    <ul id="bids"></ul>
+
+    <p id="status"></p>
+  </div>
 
   <script>
-  // Load user from localStorage
-  const storedUser = localStorage.getItem("piUser");
+    Pi.init({ version: "2.0", sandbox: true });
 
-  if (storedUser) {
-    const user = JSON.parse(storedUser);
-    console.log("Logged in user:", user.username);
-    document.getElementById("userInfo").innerText = `Welcome, ${user.username}`;
-  } else {
-    alert("You must login through the Pi Browser first.");
-    window.location.href = "index.html"; // Redirect to login
-  }
+    const user = JSON.parse(localStorage.getItem("piUser"));
+    if (!user) {
+      alert("Please login first via the home page.");
+      window.location.href = "index.html";
+    }
 
-  Pi.init({ version: "2.0", sandbox: true });
+    // Real auction end time (UTC)
+    const endTime = new Date("2025-12-31T23:59:59Z");
+    const ws = new WebSocket("wss://appraisells-backend.onrender.com");
 
-  let ws = new WebSocket("wss://appraisells-backend.onrender.com/auction");
+    function updateTimer() {
+      const now = new Date();
+      const diff = endTime - now;
 
-  ws.onmessage = e => {
-    const data = JSON.parse(e.data);
-    document.getElementById('current').innerText = data.highest + " Pi";
-    const li = document.createElement('li');
-    li.innerText = `${data.user}: ${data.amount} Pi`;
-    document.getElementById('bid-list').appendChild(li);
-  };
+      if (diff <= 0) {
+        document.getElementById("timer").innerText = "Auction Ended";
+        document.getElementById("status").innerText = "Auction is over.";
+        document.querySelector(".btn").disabled = true;
+        return;
+      }
 
-  function placeBid() {
-    const user = JSON.parse(localStorage.getItem("piUser"))?.username || "Anonymous";
-    const amount = prompt("Enter bid amount in Pi:");
-    if (!amount) return;
-    ws.send(JSON.stringify({ type: "bid", amount, user }));
-  }
-</script>
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      document.getElementById("timer").innerText = `${minutes}m ${seconds}s`;
+    }
 
+    setInterval(updateTimer, 1000);
+
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      document.getElementById("highest").innerText = data.highest + " Pi";
+      document.getElementById("leader").innerText = data.user;
+
+      const li = document.createElement("li");
+      li.innerText = `${data.user}: ${data.amount} Pi`;
+      document.getElementById("bids").prepend(li);
+    };
+
+    function placeBid() {
+      const amt = prompt("Enter your bid in Pi:");
+      if (!amt || isNaN(amt) || parseFloat(amt) <= 0) {
+        alert("Invalid bid.");
+        return;
+      }
+
+      ws.send(JSON.stringify({
+        type: "bid",
+        amount: amt,
+        user: user.username
+      }));
+    }
+  </script>
 </body>
 </html>
