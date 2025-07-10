@@ -2,115 +2,124 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Auction - Appraisells</title>
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <title>Live Auction</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 30px;
+      padding: 20px;
+      background-color: #f5f5f5;
       text-align: center;
     }
-    .auction-box {
-      background: white;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 0 10px #ccc;
-      border-radius: 10px;
+
+    h1 {
+      color: #663399;
     }
+
+    .info {
+      margin-bottom: 20px;
+      font-size: 1.2em;
+    }
+
     .btn {
-      background: #663399;
-      color: white;
       padding: 10px 20px;
-      margin-top: 10px;
-      border: none;
       font-size: 1em;
+      background-color: #663399;
+      color: white;
+      border: none;
       border-radius: 6px;
       cursor: pointer;
     }
-    ul#bids {
-      list-style: none;
-      padding: 0;
-      max-height: 200px;
-      overflow-y: scroll;
+
+    #bid-list {
+      max-width: 600px;
+      margin: 30px auto;
       text-align: left;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-height: 300px;
+      overflow-y: auto;
     }
-    li {
-      margin-bottom: 6px;
+
+    .bid-entry {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+    }
+
+    .bid-entry:last-child {
+      border-bottom: none;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="auction-box">
-    <h2>Live Auction</h2>
-    <p><strong>Auction Ends In:</strong> <span id="timer"></span></p>
-    <p><strong>Current Highest Bid:</strong> <span id="highest">0 Pi</span> by <span id="leader">None</span></p>
+  <h1>Live Auction</h1>
 
+  <div class="info">
+    <p>Highest Bid: <span id="current">0 Pi</span></p>
+    <p>Highest Bidder: <span id="bidder">None</span></p>
     <button class="btn" onclick="placeBid()">Place a Bid</button>
-
-    <h3>Live Bids:</h3>
-    <ul id="bids"></ul>
-
-    <p id="status"></p>
   </div>
 
+  <div id="error"></div>
+
+  <div id="bid-list"></div>
+
   <script>
-    Pi.init({ version: "2.0", sandbox: true });
+    const ws = new WebSocket("wss://YOUR-RENDER-BACKEND.onrender.com");
 
-    const user = JSON.parse(localStorage.getItem("piUser"));
-    if (!user) {
-      alert("Please login first via the home page.");
-      window.location.href = "index.html";
+    let user = JSON.parse(localStorage.getItem("piUser"));
+    if (!user || !user.username) {
+      alert("You must be logged in via Pi Network.");
+      location.href = "index.html";
     }
 
-    // Real auction end time (UTC)
-    const endTime = new Date("2025-12-31T23:59:59Z");
-    const ws = new WebSocket("wss://appraisells-backend.onrender.com");
-
-    function updateTimer() {
-      const now = new Date();
-      const diff = endTime - now;
-
-      if (diff <= 0) {
-        document.getElementById("timer").innerText = "Auction Ended";
-        document.getElementById("status").innerText = "Auction is over.";
-        document.querySelector(".btn").disabled = true;
-        return;
-      }
-
-      const minutes = Math.floor((diff / 1000 / 60) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-      document.getElementById("timer").innerText = `${minutes}m ${seconds}s`;
-    }
-
-    setInterval(updateTimer, 1000);
+    const bidList = document.getElementById("bid-list");
+    const current = document.getElementById("current");
+    const bidder = document.getElementById("bidder");
+    const errorBox = document.getElementById("error");
 
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      if (data.error) {
-        alert(data.error);
-        return;
+      errorBox.innerText = "";
+
+      if (data.type === "init") {
+        current.innerText = data.highest + " Pi";
+        bidder.innerText = data.user || "None";
+        bidList.innerHTML = "";
+        data.bids.forEach(bid => appendBid(bid));
+      } else if (data.type === "bid") {
+        current.innerText = data.highest + " Pi";
+        bidder.innerText = data.user;
+        appendBid(data);
+      } else if (data.error) {
+        errorBox.innerText = data.error;
       }
-
-      document.getElementById("highest").innerText = data.highest + " Pi";
-      document.getElementById("leader").innerText = data.user;
-
-      const li = document.createElement("li");
-      li.innerText = `${data.user}: ${data.amount} Pi`;
-      document.getElementById("bids").prepend(li);
     };
 
+    function appendBid(bid) {
+      const div = document.createElement("div");
+      div.className = "bid-entry";
+      div.innerText = `${bid.timestamp.split("T")[0]} ${bid.timestamp.split("T")[1].split(".")[0]} — ${bid.user}: ${bid.amount} Pi`;
+      bidList.prepend(div);
+    }
+
     function placeBid() {
-      const amt = prompt("Enter your bid in Pi:");
-      if (!amt || isNaN(amt) || parseFloat(amt) <= 0) {
-        alert("Invalid bid.");
+      const amount = prompt("Enter your bid amount in Pi:");
+      if (!amount || isNaN(amount)) {
+        alert("Please enter a valid number.");
         return;
       }
 
       ws.send(JSON.stringify({
         type: "bid",
-        amount: amt,
+        amount,
         user: user.username
       }));
     }
