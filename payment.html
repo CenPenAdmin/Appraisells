@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #ffffff;
+    }
+
+    .container {
+      background-color: #f9f9f9;
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .wallet-address {
+      font-family: monospace;
+      font-size: 1.2em;
+      color: #663399;
+      background-color: #eee;
+      padding: 10px;
+      border-radius: 6px;
+      margin: 20px auto;
+      word-break: break-all;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 14px 28px;
+      font-size: 1.1em;
+      background-color: #663399;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #552288;
+    }
+
+    p.note {
+      font-size: 1em;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Confirm Your Auction Entry</h2>
+    <p>Please send <strong>1 Pi Coin</strong> to the wallet address below:</p>
+
+    <div class="wallet-address">
+      GAPPRAISELLSWALLET1234567890
+    </div>
+
+    <p class="note">
+      After sending your payment, click the button below to proceed to the Live Auction.
+    </p>
+
+    <button onclick="confirmPayment()">I Have Paid</button>
+  </div>
+
+  <script>
+    function confirmPayment() {
+      // You may add validation logic or real Pi Network transaction checking later
+      alert("Thank you! Redirecting to Live Auction...");
+      setTimeout(() => {
+        window.location.href = "auction.html";
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
