@@ -1,74 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Complete Profile</title>
+  <meta charset="UTF-8">
+  <title>Register for Auction</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f7f7f7;
+      background-color: #ffffff;
+      margin: 0;
       padding: 40px;
+      text-align: center;
     }
+
     form {
-      max-width: 400px;
+      background-color: #f9f9f9;
+      padding: 30px;
       margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #ccc;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     input, textarea {
       width: 100%;
+      padding: 12px;
       margin: 10px 0;
-      padding: 10px;
-    }
-    button {
-      background: #663399;
-      color: white;
-      padding: 10px;
-      border: none;
+      font-size: 1em;
+      border: 1px solid #ccc;
       border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
     }
-    #status {
-      text-align: center;
-      color: green;
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    #tos {
       margin-top: 20px;
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: #663399;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #status {
+      color: green;
+      font-weight: bold;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
 
-  <h2 style="text-align:center;">Complete Your Profile</h2>
-  <form id="profileForm">
-    <input type="text" name="fullName" placeholder="Full Name" required />
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="text" name="wallet" placeholder="Pi Wallet Address" required />
-    <textarea name="notes" placeholder="Notes / Address"></textarea>
-    <button type="submit">Save Profile</button>
-  </form>
+  <h2>Auction Registration Form</h2>
 
-  <p id="status"></p>
+  <form id="profileForm">
+    <label for="fullName">Full Name</label>
+    <input type="text" name="fullName" required>
+
+    <label for="email">Email Address</label>
+    <input type="email" name="email" required>
+
+    <label for="address">Shipping Address</label>
+    <textarea name="address" rows="3" required></textarea>
+
+    <label>
+      <input type="checkbox" id="tos" required>
+      I agree to the <a href="#" target="_blank">Terms & Conditions</a>
+    </label>
+
+    <button type="submit">Submit Registration</button>
+
+    <p id="status"></p>
+  </form>
 
   <script>
     document.getElementById("profileForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const data = Object.fromEntries(new FormData(e.target));
+
+      if (!document.getElementById("tos").checked) {
+        alert("You must agree to the Terms and Conditions.");
+        return;
+      }
+
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
 
       try {
         const res = await fetch("https://appraisells-backend.onrender.com/save-profile", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
         });
+
         const result = await res.json();
-        document.getElementById("status").innerText = result.message || "Saved!";
-        setTimeout(() => window.location.href = "index.html", 1500);
+        document.getElementById("status").innerText = result.message || "Saved successfully!";
+        setTimeout(() => {
+          window.location.href = "payment.html";
+        }, 1500);
+
       } catch (err) {
-        document.getElementById("status").innerText = "Error saving data.";
+        console.error("Error:", err);
+        document.getElementById("status").innerText = "Failed to save. Please try again.";
       }
     });
   </script>
+
 </body>
 </html>
