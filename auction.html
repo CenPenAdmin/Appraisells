@@ -2,118 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Auction - Appraisells</title>
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <title>Auction Registration</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 30px;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
       text-align: center;
     }
-    .auction-box {
-      background: white;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 0 10px #ccc;
-      border-radius: 10px;
-    }
-    .btn {
-      background: #663399;
+
+    header {
+      background-color: #663399;
       color: white;
-      padding: 10px 20px;
-      margin-top: 10px;
+      padding: 20px;
+      font-size: 1.5em;
+    }
+
+    #countdown {
+      font-size: 2em;
+      color: #ff5555;
+      margin-top: 20px;
+    }
+
+    .container {
+      padding: 40px;
+    }
+
+    .btn {
+      padding: 15px 25px;
+      font-size: 1.2em;
+      color: white;
+      background-color: #663399;
       border: none;
-      font-size: 1em;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      margin-top: 30px;
     }
-    ul#bids {
-      list-style: none;
-      padding: 0;
-      max-height: 200px;
-      overflow-y: scroll;
-      text-align: left;
+
+    .btn:hover {
+      background-color: #552288;
     }
-    li {
-      margin-bottom: 6px;
+
+    p {
+      font-size: 1.1em;
+      margin-top: 20px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="auction-box">
-    <h2>Live Auction</h2>
-    <p><strong>Auction Ends In:</strong> <span id="timer"></span></p>
-    <p><strong>Current Highest Bid:</strong> <span id="highest">0 Pi</span> by <span id="leader">None</span></p>
 
-    <button class="btn" onclick="placeBid()">Place a Bid</button>
+  <header>
+    Live Auction Registration<br>
+    <div id="countdown">Loading timer...</div>
+  </header>
 
-    <h3>Live Bids:</h3>
-    <ul id="bids"></ul>
+  <div class="container">
+    <p>You must complete your registration before the auction begins.</p>
+    <p>This includes submitting your information and sending the 1 Pi registration fee.</p>
 
-    <p id="status"></p>
+    <button class="btn" onclick="beginRegistration()">Register for Live Auction</button>
   </div>
 
   <script>
-    Pi.init({ version: "2.0", sandbox: true });
+    // Countdown logic
+    const countdownTarget = new Date();
+    countdownTarget.setMinutes(countdownTarget.getMinutes() + 15); // 15 min from load
 
-    const user = JSON.parse(localStorage.getItem("piUser"));
-    if (!user) {
-      alert("Please login first via the home page.");
-      window.location.href = "index.html";
-    }
-
-    // Real auction end time (UTC)
-    const endTime = new Date("2025-12-31T23:59:59Z");
-    const ws = new WebSocket("wss://appraisells-backend.onrender.com");
-
-    function updateTimer() {
+    function updateCountdown() {
       const now = new Date();
-      const diff = endTime - now;
+      const diff = countdownTarget - now;
 
       if (diff <= 0) {
-        document.getElementById("timer").innerText = "Auction Ended";
-        document.getElementById("status").innerText = "Auction is over.";
+        document.getElementById("countdown").innerText = "Registration Closed";
         document.querySelector(".btn").disabled = true;
         return;
       }
 
-      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const minutes = Math.floor(diff / 1000 / 60);
       const seconds = Math.floor((diff / 1000) % 60);
-      document.getElementById("timer").innerText = `${minutes}m ${seconds}s`;
+      document.getElementById("countdown").innerText =
+        `Registration ends in ${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
     }
 
-    setInterval(updateTimer, 1000);
+    setInterval(updateCountdown, 1000);
 
-    ws.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-
-      document.getElementById("highest").innerText = data.highest + " Pi";
-      document.getElementById("leader").innerText = data.user;
-
-      const li = document.createElement("li");
-      li.innerText = `${data.user}: ${data.amount} Pi`;
-      document.getElementById("bids").prepend(li);
-    };
-
-    function placeBid() {
-      const amt = prompt("Enter your bid in Pi:");
-      if (!amt || isNaN(amt) || parseFloat(amt) <= 0) {
-        alert("Invalid bid.");
-        return;
-      }
-
-      ws.send(JSON.stringify({
-        type: "bid",
-        amount: amt,
-        user: user.username
-      }));
+    function beginRegistration() {
+      // Redirect to profile page for info
+      window.location.href = "profile.html";
     }
   </script>
+
 </body>
 </html>
