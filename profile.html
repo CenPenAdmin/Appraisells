@@ -94,6 +94,9 @@
 
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
+
+      const piUser = JSON.parse(localStorage.getItem("piUser"));
+      data.wallet_address = piUser?.username || "Anonymous";
       console.log("Sending data:", data);  // ✅ Added debug line
 
       try {
