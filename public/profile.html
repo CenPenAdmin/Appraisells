@@ -54,7 +54,7 @@
       const wallet_address = document.getElementById('wallet_address').value;
 
       try {
-        const res = await fetch('http://localhost:3000/save-profile', {
+        const res = await fetch('/save-profile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ full_name, email, wallet_address })
