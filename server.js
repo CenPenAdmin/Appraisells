@@ -1,41 +1,42 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
+const DATA_FILE = path.join(__dirname, "profiles.json");
 
 // === Middleware ===
 app.use(cors());
-const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
-// === MongoDB Connection ===
-mongoose.connect("mongodb://localhost:27017/appraisells", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log("✅ Connected to MongoDB");
-}).catch(err => {
-  console.error("❌ MongoDB connection error:", err);
-});
+// === Initialize profiles.json if it doesn't exist ===
+if (!fs.existsSync(DATA_FILE)) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify([]));
+}
 
-// === Mongoose Schema for User Profile ===
-const profileSchema = new mongoose.Schema({
-  full_name: String,
-  email: String,
-  wallet_address: String,
-  created_at: { type: Date, default: Date.now }
-});
+// === Helper to load and save profiles ===
+const loadProfiles = () => {
+  const data = fs.readFileSync(DATA_FILE);
+  return JSON.parse(data);
+};
 
-const Profile = mongoose.model("Profile", profileSchema);
+const saveProfiles = (profiles) => {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(profiles, null, 2));
+};
 
 // === Route: Save Profile ===
-app.post("/save-profile", async (req, res) => {
+app.post("/save-profile", (req, res) => {
   try {
-    const profile = new Profile(req.body);
-    await profile.save();
+    const profiles = loadProfiles();
+    const newProfile = {
+      ...req.body,
+      created_at: new Date().toISOString()
+    };
+    profiles.push(newProfile);
+    saveProfiles(profiles);
     res.json({ message: "✅ Profile saved successfully." });
   } catch (err) {
     console.error("❌ Error saving profile:", err);
@@ -43,14 +44,14 @@ app.post("/save-profile", async (req, res) => {
   }
 });
 
-// === Route: Get All Profiles (Optional, for testing) ===
-app.get("/profiles", async (req, res) => {
+// === Route: Get All Profiles (optional) ===
+app.get("/profiles", (req, res) => {
   try {
-    const profiles = await Profile.find().sort({ created_at: -1 });
+    const profiles = loadProfiles();
     res.json(profiles);
   } catch (err) {
-    console.error("❌ Error fetching profiles:", err);
-    res.status(500).json({ message: "❌ Failed to fetch profiles." });
+    console.error("❌ Error loading profiles:", err);
+    res.status(500).json({ message: "❌ Failed to load profiles." });
   }
 });
 
