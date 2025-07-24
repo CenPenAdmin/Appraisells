@@ -38,43 +38,12 @@
 
       if (res.ok) {
         document.getElementById("profileName").innerText = user.name;
-        
-        // Set navigation button links with user info
-        document.getElementById("gameBtn").href = `games.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}`;
-        document.getElementById("radioBtn").href = `radio.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}`;
-        document.getElementById("showsBtn").href = `shows.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}`;
-        document.getElementById("messengerBtn").href = `messenger.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}`;
-        document.getElementById("coinsBtn").href = `coins.html?user=${encodeURIComponent(user.email)}`;
-        document.getElementById("newsBtn").href = `news.html?email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name)}`;
-      } else {
-        alert("User not found. Redirecting to login.");
-        window.location.href = "/index.html";
       }
-    }
+    } 
 
     loadProfile();
 
-    document.getElementById('viewPublicBtn').addEventListener('click', async () => {
-      const email = document.getElementById('publicEmail').value;
-      if (!email) {
-        alert("Please enter an email.");
-        return;
-      }
-      const res = await fetch(`/api/user/${encodeURIComponent(email)}`);
-      const user = await res.json();
-      const publicProfileDiv = document.getElementById("publicProfile");
-      if (res.ok) {
-        let profileHTML = `
-          <div style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto;">
-            <h4 style="color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">👤 Public Profile</h4>
-            <p style="margin: 10px 0;"><strong>Name:</strong> ${user.name}</p>
-            <p style="margin: 10px 0;"><strong>Email:</strong> ${user.email}</p>
-        `;
-        publicProfileDiv.innerHTML = profileHTML;
-      } else {
-        publicProfileDiv.innerHTML = `<div style="color: red; font-weight: bold;">Error: Cannot load profile for this email.</div>`;
-  } 
-});
+    
   </script>
 
   </body>
