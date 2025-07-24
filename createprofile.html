@@ -89,7 +89,7 @@
         console.log('Response data:', data);
 
         if (res.ok) {
-          window.location.href = "profile.html"; // Redirect to profile page
+          window.location.href = `profile.html?email=${encodeURIComponent(email)}`; // Redirect to profile page with email
         } else {
           messageDiv.textContent = data.message || "Something went wrong.";
           messageDiv.style.color = "red";
