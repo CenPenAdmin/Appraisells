@@ -18,6 +18,19 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
+      background-color: #663399;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #552288;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
     .message {
       margin-top: 15px;
@@ -43,8 +56,16 @@
   <div class="message" id="message"></div>
 
   <script>
+    console.log('Profile page JavaScript loaded');
+    
     const form = document.getElementById('profileForm');
     const messageDiv = document.getElementById('message');
+
+    if (!form) {
+      console.error('Form not found!');
+    } else {
+      console.log('Form found, adding event listener');
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -54,13 +75,18 @@
       const wallet_address = document.getElementById('wallet_address').value;
 
       try {
-        const res = await fetch('/save-profile', {
+        console.log('Submitting form with data:', { full_name, email, wallet_address });
+        
+        // Replace 'your-ngrok-url' with your actual ngrok URL
+        const res = await fetch('https://683de5238c97.ngrok-free.app/save-profile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ full_name, email, wallet_address })
         });
 
+        console.log('Response status:', res.status);
         const data = await res.json();
+        console.log('Response data:', data);
 
         if (res.ok) {
           messageDiv.textContent = data.message;

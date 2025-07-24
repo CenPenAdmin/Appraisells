@@ -8,9 +8,18 @@ const port = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, "profiles.json");
 
 // === Middleware ===
-app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+app.use(express.static(__dirname));
 app.use(express.json());
+
+// Add logging middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`, req.body);
+  next();
+});
 
 // === Initialize profiles.json if it doesn't exist ===
 if (!fs.existsSync(DATA_FILE)) {
@@ -53,6 +62,11 @@ app.get("/profiles", (req, res) => {
     console.error("❌ Error loading profiles:", err);
     res.status(500).json({ message: "❌ Failed to load profiles." });
   }
+});
+
+// === Route: Serve main page ===
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // === Start Server ===
