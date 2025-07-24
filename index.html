@@ -118,7 +118,7 @@
       }
       try {
         // Use your ngrok URL if running backend remotely, or just /profiles if same origin
-        const res = await fetch("https://51c0a2ecef0b.ngrok-free.app/profiles");
+        const res = await fetch("https://f1baddcad3f1.ngrok-free.app/profiles");
         const profiles = await res.json();
         const user = profiles.find(p => p.email === email);
         if (user) {
