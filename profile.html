@@ -78,7 +78,7 @@
         console.log('Submitting form with data:', { full_name, email, wallet_address });
         
         // Replace 'your-ngrok-url' with your actual ngrok URL
-        const res = await fetch('https://683de5238c97.ngrok-free.app/save-profile', {
+        const res = await fetch('https://cf414d82c09a.ngrok-free.app/save-profile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ full_name, email, wallet_address })
@@ -89,9 +89,7 @@
         console.log('Response data:', data);
 
         if (res.ok) {
-          messageDiv.textContent = data.message;
-          messageDiv.style.color = "green";
-          form.reset();
+          window.location.href = "payment.html"; // Redirect to payment page
         } else {
           messageDiv.textContent = data.message || "Something went wrong.";
           messageDiv.style.color = "red";
