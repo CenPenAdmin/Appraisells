@@ -79,24 +79,6 @@
   <script>
     Pi.init({ version: "2.0", sandbox: true });
 
-    function login() {
-      Pi.authenticate(['username', 'payments'])
-        .then(auth => {
-          const user = auth.user;
-          localStorage.setItem("piUser", JSON.stringify(user));
-
-          document.getElementById("userGreeting").innerText = `Welcome, ${user.username}`;
-          document.getElementById("login-section").style.display = "none";
-          document.getElementById("main-section").style.display = "block";
-          document.body.style.backgroundColor = "white";
-          document.body.style.color = "black";
-        })
-        .catch(err => {
-          console.error("Login failed:", err);
-          alert("Please open this app in the Pi Browser and try again.");
-        });
-    }
-
     // Auto login if session already exists
     window.onload = () => {
       const storedUser = localStorage.getItem("piUser");
