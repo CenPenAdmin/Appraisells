@@ -109,6 +109,12 @@
     <button class="nav-btn" onclick="location.href='createprofile.html'">Create Profile</button>
   </div>
 
+  <!-- Manual Login Section -->
+  <div id="manual-login" style="margin-top: 30px;">
+    <input type="email" id="loginEmail" placeholder="Enter your email" style="padding:10px; width:220px; border-radius:5px; border:1px solid #ccc;">
+    <button id="manualLoginBtn" style="padding:10px 20px; border-radius:5px; background:#663399; color:white; border:none; cursor:pointer;">Login to Profile</button>
+  </div>
+
   <script>
     Pi.init({ version: "2.0", sandbox: true });
 
@@ -142,6 +148,30 @@
         document.body.style.color = "black";
       }
     };
+
+    document.getElementById("manualLoginBtn").onclick = async function() {
+      const email = document.getElementById("loginEmail").value.trim();
+      if (!email) {
+        alert("Please enter your email.");
+        return;
+      }
+      try {
+        // Use your ngrok URL if running backend remotely, or just /profiles if same origin
+        const res = await fetch("/profiles");
+        const profiles = await res.json();
+        const user = profiles.find(p => p.email === email);
+        if (user) {
+          // Redirect to profile.html with email as query param
+          window.location.href = `profile.html?email=${encodeURIComponent(email)}`;
+        } else {
+          alert("No profile found for this email.");
+        }
+      } catch (err) {
+        alert("Error connecting to server.");
+        console.error(err);
+      }
+    };
+    
   </script>
 
 </body>
