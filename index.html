@@ -70,11 +70,7 @@
     <button class="nav-btn" onclick="location.href='createprofile.html'">Create Profile</button>
   </div>
 
-  <!-- Manual Login Section -->
-  <div id="manual-login" style="margin-top: 30px;">
-    <input type="email" id="loginEmail" placeholder="Enter your email" style="padding:10px; width:220px; border-radius:5px; border:1px solid #ccc;">
-    <button id="manualLoginBtn" style="padding:10px 20px; border-radius:5px; background:#663399; color:white; border:none; cursor:pointer;">Login to Profile</button>
-  </div>
+  <!-- Manual Login Section removed -->
 
   <script>
     Pi.init({ version: "2.0", sandbox: true });
@@ -92,28 +88,31 @@
       }
     };
 
-    document.getElementById("manualLoginBtn").onclick = async function() {
-      const email = document.getElementById("loginEmail").value.trim();
-      if (!email) {
-        alert("Please enter your email.");
-        return;
+    // Manual login removed
+    
+    function login() {
+  Pi.authenticate(['username', 'payments'])
+    .then(auth => {
+      const user = auth.user;
+      // Show Pi username and wallet info
+      document.getElementById("userGreeting").innerText = `Welcome, ${user.username}`;
+      document.getElementById("login-section").style.display = "none";
+      document.getElementById("main-section").style.display = "block";
+      document.body.style.backgroundColor = "white";
+      document.body.style.color = "black";
+      // Show wallet info if available
+      if (user.wallet) {
+        const walletDiv = document.createElement('div');
+        walletDiv.style.marginTop = '20px';
+        walletDiv.innerHTML = `<strong>Wallet:</strong> ${user.wallet}`;
+        document.getElementById("main-section").appendChild(walletDiv);
       }
-      try {
-        // Use your ngrok URL if running backend remotely, or just /profiles if same origin
-        const res = await fetch("https://f1baddcad3f1.ngrok-free.app/profiles");
-        const profiles = await res.json();
-        const user = profiles.find(p => p.email === email);
-        if (user) {
-          // Redirect to profile.html with email as query param
-          window.location.href = `profile.html?email=${encodeURIComponent(email)}`;
-        } else {
-          alert("No profile found for this email.");
-        }
-      } catch (err) {
-        alert("Error connecting to server.");
-        console.error(err);
-      }
-    };
+    })
+    .catch(err => {
+      console.error("Login failed:", err);
+      alert("Please open this app in the Pi Browser and try again.");
+    });
+}
     
   </script>
 
