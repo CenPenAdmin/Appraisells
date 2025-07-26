@@ -60,6 +60,10 @@
   </style>
 </head>
 <body>
+  <!-- Pi Network Login Button -->
+  <div id="login-section" style="margin-top: 100px;">
+    <button id="loginBtn" style="padding:15px 30px; font-size:1.2em; background-color:#663399; color:white; border:none; border-radius:6px; cursor:pointer;">Login with Pi Network</button>
+  </div>
 
   <!-- Banner -->
   <header>
@@ -71,20 +75,11 @@
   <!-- Manual Login Section removed -->
 
   <script>
+    // Connect login button to Pi authentication
+    document.getElementById("loginBtn").onclick = login;
     Pi.init({ version: "2.0", sandbox: true });
 
-    // Auto login if session already exists
-    window.onload = () => {
-      const storedUser = localStorage.getItem("piUser");
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        document.getElementById("userGreeting").innerText = `Welcome, ${user.username}`;
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("main-section").style.display = "block";
-        document.body.style.backgroundColor = "white";
-        document.body.style.color = "black";
-      }
-    };
+   
 
     // Manual login removed
     
