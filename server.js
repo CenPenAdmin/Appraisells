@@ -1,3 +1,17 @@
+// === Pi Network Payment Endpoints ===
+app.post("/approve-payment", (req, res) => {
+  // Here you would verify the paymentId and approve it with Pi Network API
+  // For sandbox, just respond success
+  console.log("Approving payment:", req.body.paymentId);
+  res.json({ success: true });
+});
+
+app.post("/complete-payment", (req, res) => {
+  // Here you would verify the paymentId and complete it with Pi Network API
+  // For sandbox, just respond success
+  console.log("Completing payment:", req.body.paymentId);
+  res.json({ success: true });
+});
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
