@@ -1,25 +1,10 @@
-// === Pi Network Payment Endpoints ===
-app.post("/approve-payment", (req, res) => {
-  // Here you would verify the paymentId and approve it with Pi Network API
-  // For sandbox, just respond success
-  console.log("Approving payment:", req.body.paymentId);
-  res.json({ success: true });
-});
 
-app.post("/complete-payment", (req, res) => {
-  // Here you would verify the paymentId and complete it with Pi Network API
-  // For sandbox, just respond success
-  console.log("Completing payment:", req.body.paymentId);
-  res.json({ success: true });
-});
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
 const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, "profiles.json");
 
 // === Middleware ===
 app.use(cors({
@@ -29,58 +14,56 @@ app.use(cors({
 app.use(express.static(__dirname));
 app.use(express.json());
 
-// Add logging middleware
+// Logging middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`, req.body);
   next();
 });
 
-// === Initialize profiles.json if it doesn't exist ===
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify([]));
-}
-
-// === Helper to load and save profiles ===
-const loadProfiles = () => {
-  const data = fs.readFileSync(DATA_FILE);
-  return JSON.parse(data);
-};
-
-const saveProfiles = (profiles) => {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(profiles, null, 2));
-};
-
-// === Route: Save Profile ===
-app.post("/save-profile", (req, res) => {
-  try {
-    const profiles = loadProfiles();
-    const newProfile = {
-      ...req.body,
-      created_at: new Date().toISOString()
-    };
-    profiles.push(newProfile);
-    saveProfiles(profiles);
-    res.json({ message: "✅ Profile saved successfully." });
-  } catch (err) {
-    console.error("❌ Error saving profile:", err);
-    res.status(500).json({ message: "❌ Failed to save profile." });
-  }
-});
-
-// === Route: Get All Profiles (optional) ===
-app.get("/profiles", (req, res) => {
-  try {
-    const profiles = loadProfiles();
-    res.json(profiles);
-  } catch (err) {
-    console.error("❌ Error loading profiles:", err);
-    res.status(500).json({ message: "❌ Failed to load profiles." });
-  }
-});
-
 // === Route: Serve main page ===
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// === Pi Network Auth Endpoint ===
+// Expects { pi_token: "..." } in body
+app.post("/auth", async (req, res) => {
+  const { pi_token } = req.body;
+  // TODO: Replace with real Pi Network verification in production
+  if (!pi_token) {
+    return res.status(400).json({ message: "Missing pi_token" });
+  }
+  // Simulate verification and extraction
+  // In production, verify token and fetch user info from Pi API
+  const username = "sandbox_user";
+  const wallet = {
+    address: "test_wallet_address",
+    balance: 1000
+  };
+  res.json({ username, wallet });
+});
+
+// === Pi Network Payment Endpoints (Sandbox) ===
+// Approve payment
+app.post("/approve-payment", (req, res) => {
+  const { paymentId, amount, to } = req.body;
+  // Simulate approval logic
+  if (!paymentId || !amount || !to) {
+    return res.status(400).json({ message: "Missing payment info" });
+  }
+  // In production, verify payment with Pi API
+  res.json({ status: "approved", paymentId });
+});
+
+// Complete payment
+app.post("/complete-payment", (req, res) => {
+  const { paymentId } = req.body;
+  // Simulate completion logic
+  if (!paymentId) {
+    return res.status(400).json({ message: "Missing paymentId" });
+  }
+  // In production, confirm payment completion with Pi API
+  res.json({ status: "completed", paymentId });
 });
 
 // === Start Server ===

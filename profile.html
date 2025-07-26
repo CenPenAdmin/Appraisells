@@ -32,16 +32,30 @@
           fetch("/approve-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ paymentId })
-          });
+            body: JSON.stringify({
+              paymentId: "123",
+              amount: 10,
+              to: "recipient_wallet_address"
+            })
+          })
+            .then(res => res.json())
+            .then(data => {
+              // data: { status, paymentId }
+              console.log(data);
+            });
         },
         onReadyForServerCompletion: paymentId => {
           // Call backend to complete payment
           fetch("/complete-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ paymentId })
-          });
+            body: JSON.stringify({ paymentId: "123" })
+          })
+            .then(res => res.json())
+            .then(data => {
+              // data: { status, paymentId }
+              console.log(data);
+            });
         },
         onCancel: paymentId => {
           alert("Payment cancelled.");
@@ -84,6 +98,18 @@
       onError: error => { /* handle error */ }
     });
     
+    // Replace with actual pi_token from Pi SDK
+const pi_token = "your_pi_token_here";
+fetch("/auth", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ pi_token })
+})
+  .then(res => res.json())
+  .then(data => {
+    // data: { username, wallet }
+    console.log(data);
+  });
   </script>
 
   </body>
