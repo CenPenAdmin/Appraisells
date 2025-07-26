@@ -8,6 +8,7 @@
 </head>
 <body>
   <h2>APPRAISELLS</h2>
+  <div id="userInfo" style="margin: 30px 0; font-size: 1.2em;"></div>
   
  
 
@@ -22,26 +23,21 @@
       window.location.href = "index.html";
     }
 
-    async function loadProfile() {
+    // Display Pi user info from query params
+    function displayPiUserInfo() {
       const params = new URLSearchParams(window.location.search);
-      const email = params.get("email");
-      if (!email) {
-        alert("No email found. Redirecting to login.");
-        window.location.href = "/index.html";
-        return;
+      const username = params.get("username");
+      const wallet = params.get("wallet");
+      let info = "";
+      if (username) {
+        info += `<strong>Username:</strong> ${username}<br>`;
       }
-
-      currentEmail = email;
-
-      const res = await fetch(`/api/user/${encodeURIComponent(email)}`);
-      const user = await res.json();
-
-      if (res.ok) {
-        document.getElementById("profileName").innerText = user.name;
+      if (wallet) {
+        info += `<strong>Wallet:</strong> ${wallet}`;
       }
-    } 
-
-    loadProfile();
+      document.getElementById("userInfo").innerHTML = info;
+    }
+    displayPiUserInfo();
 
     
   </script>

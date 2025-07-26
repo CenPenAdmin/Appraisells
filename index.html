@@ -66,9 +66,7 @@
     <h1>APPRAISELLS</h1>
   </header>
     
-    <!-- Enter Create Profile Button -->
-    <button class="nav-btn" onclick="location.href='createprofile.html'">Create Profile</button>
-  </div>
+    <!-- Enter Create Profile Button removed -->
 
   <!-- Manual Login Section removed -->
 
@@ -95,18 +93,8 @@
     .then(auth => {
       const user = auth.user;
       // Show Pi username and wallet info
-      document.getElementById("userGreeting").innerText = `Welcome, ${user.username}`;
-      document.getElementById("login-section").style.display = "none";
-      document.getElementById("main-section").style.display = "block";
-      document.body.style.backgroundColor = "white";
-      document.body.style.color = "black";
-      // Show wallet info if available
-      if (user.wallet) {
-        const walletDiv = document.createElement('div');
-        walletDiv.style.marginTop = '20px';
-        walletDiv.innerHTML = `<strong>Wallet:</strong> ${user.wallet}`;
-        document.getElementById("main-section").appendChild(walletDiv);
-      }
+      // Redirect to profile.html with Pi username and wallet as query params
+      window.location.href = `profile.html?username=${encodeURIComponent(user.username)}${user.wallet ? `&wallet=${encodeURIComponent(user.wallet)}` : ''}`;
     })
     .catch(err => {
       console.error("Login failed:", err);
