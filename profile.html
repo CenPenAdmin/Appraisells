@@ -4,11 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Profile</title>
+
+  <style>
+  
+  header {
+      background-color: #663399;
+      padding: 20px 0;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 4em;
+      color: white;
+      text-align: center;
+    }
+  
+  </style>
  
 </head>
 <body>
   
-  <h2>APPRAISELLS</h2>
+  <header>
+  <h1>APPRAISELLS</h1>
+  </header>
   <div id="userInfo" style="margin: 30px 0; font-size: 1.2em;"></div>
   <div id="walletInfo" style="margin: 10px 0; font-size: 1.1em;"></div>
   <div style="text-align: center; margin-top: 20px;">
@@ -17,7 +35,7 @@
  
 
   <div style="text-align: center; margin-top: 30px;">
-    <button onclick="logout()">Log Out</button>
+    <button onclick="logout()" id="logoutBtn" style="padding:12px 25px; font-size:2rem; background-color:#663399; color:white; border:none; border-radius:8px; cursor:pointer;">Log Out</button>
   </div>
 
   <script>
