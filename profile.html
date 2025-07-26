@@ -9,6 +9,7 @@
 <body>
   <h2>APPRAISELLS</h2>
   <div id="userInfo" style="margin: 30px 0; font-size: 1.2em;"></div>
+  <div id="walletInfo" style="margin: 10px 0; font-size: 1.1em;"></div>
   
  
 
@@ -30,12 +31,12 @@
       const wallet = params.get("wallet");
       let info = "";
       if (username) {
-        info += `<strong>Username:</strong> ${username}<br>`;
-      }
-      if (wallet) {
-        info += `<strong>Wallet:</strong> ${wallet}`;
+        info += `<strong>Username:</strong> ${username}`;
       }
       document.getElementById("userInfo").innerHTML = info;
+      if (wallet) {
+        document.getElementById("walletInfo").innerHTML = `<strong>Wallet:</strong> ${wallet}`;
+      }
     }
     displayPiUserInfo();
 
