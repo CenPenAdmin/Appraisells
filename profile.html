@@ -26,12 +26,16 @@
   
   <header>
   <h1>APPRAISELLS</h1>
-  </header>
+  </header> 
   <div id="userInfo" style="margin: 30px 0; font-size: 1.2em;"></div>
   <div id="walletInfo" style="margin: 10px 0; font-size: 1.1em;"></div>
   
- 
-
+  
+  <div style="text-align: center; margin-top: 50px;">
+    <button id="apprslBtn" style="padding:12px 25px; font-size:2em; background-color:#529933; color:white; border:none; border-radius:6px; cursor:pointer; display: inline-flex; align-items: center;" onclick="window.location.href='appraisal.html'">
+      Auction 1 Date and Time
+      <img src="images/auction-item1.jpg" alt="Appraisal" style="height:32px; margin-right:12px; border-radius:4px;">
+    </button>
   <div style="text-align: center; margin-top: 100px;">
     <button onclick="logout()" id="logoutBtn" style="padding:12px 25px; font-size:2rem; background-color:#663399; color:white; border:none; border-radius:8px; cursor:pointer;">Log Out</button>
   </div>
@@ -43,11 +47,7 @@
       window.location.href = "index.html";
     }
 
-    function displayWalletInfo(wallet) {
-      document.getElementById("walletInfo").innerHTML = wallet
-        ? `<strong>Wallet:</strong> ${wallet}`
-        : "";
-    }
+
 
     // Display Pi user info from query params
     function displayPiUserInfo() {
