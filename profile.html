@@ -34,7 +34,7 @@
   </div>
  
 
-  <div style="text-align: center; margin-top: 30px;">
+  <div style="text-align: center; margin-top: 100px;">
     <button onclick="logout()" id="logoutBtn" style="padding:12px 25px; font-size:2rem; background-color:#663399; color:white; border:none; border-radius:8px; cursor:pointer;">Log Out</button>
   </div>
 
@@ -45,19 +45,21 @@
       window.location.href = "index.html";
     }
 
+    function displayWalletInfo(wallet) {
+      document.getElementById("walletInfo").innerHTML = wallet
+        ? `<strong>Wallet:</strong> ${wallet}`
+        : "";
+    }
+
     // Display Pi user info from query params
     function displayPiUserInfo() {
       const params = new URLSearchParams(window.location.search);
       const username = params.get("username");
       const wallet = params.get("wallet");
-      let info = "";
-      if (username) {
-        info += `<strong>Username:</strong> ${username}`;
-      }
-      document.getElementById("userInfo").innerHTML = info;
-      if (wallet) {
-        document.getElementById("walletInfo").innerHTML = `<strong>Wallet:</strong> ${wallet}`;
-      }
+      document.getElementById("userInfo").innerHTML = username
+        ? `<strong>Username:</strong> ${username}`
+        : "";
+      displayWalletInfo(wallet);
     }
     displayPiUserInfo();
 
