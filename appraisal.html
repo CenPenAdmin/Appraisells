@@ -15,15 +15,16 @@
     .details label { font-weight: bold; display: block; margin-top: 12px; }
     #registerBtn {
       position: fixed;
-      top: 24px;
-      right: 24px;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 56px;
       background: #030006;
       color: #fff;
       font-weight: bold;
-      font-size: 1.1em;
+      font-size: 1.3em;
       border: none;
-      border-radius: 12px;
-      padding: 24px 24px;
+      border-radius: 0 0 16px 16px;
       text-align: center;
       text-decoration: none;
       box-shadow: 0 2px 8px rgba(0,0,0,0.12);
@@ -33,12 +34,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 120px;
-      height: 120px;
+      letter-spacing: 2px;
     }
     #registerBtn:hover {
       background: #f70303;
     }
+    body { padding-top: 56px; } /* Prevent content from hiding under the bar */
   </style>
 </head>
 <body>
