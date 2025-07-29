@@ -13,6 +13,32 @@
     .images img { max-width: 200px; border-radius: 8px; border: 1px solid #ccc; }
     .details { margin-top: 16px; }
     .details label { font-weight: bold; display: block; margin-top: 12px; }
+    #registerBtn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background: #030006;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 12px;
+      padding: 24px 24px;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      z-index: 1000;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 120px;
+    }
+    #registerBtn:hover {
+      background: #f70303;
+    }
   </style>
 </head>
 <body>
@@ -88,6 +114,7 @@
     </div>
   </div>
 
+  <a href="register.html" id="registerBtn">REGISTER NOW</a>
   
 </body>
 </html>
