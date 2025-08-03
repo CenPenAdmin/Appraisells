@@ -4,9 +4,463 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - Appraisells</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 32px;
+    }
+    h1 {
+      color: #030006;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+    }
+    .section h3 {
+      color: #030006;
+      margin-top: 0;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    input[type="text"], input[type="email"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    textarea {
+      height: 60px;
+      resize: vertical;
+    }
+    .payment-section {
+      background: #f9f9f9;
+      border: 2px solid #030006;
+    }
+    .payment-amount {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #030006;
+      text-align: center;
+      margin: 15px 0;
+    }
+    .terms-section {
+      background: #fffbf0;
+      border: 2px solid #f39c12;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      margin: 15px 0;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 10px;
+      margin-top: 3px;
+      width: auto;
+    }
+    .checkbox-group label {
+      margin-bottom: 0;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    .register-btn {
+      background: #030006;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      transition: background 0.2s;
+    }
+    .register-btn:hover {
+      background: #8B0000;
+    }
+    .register-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .status-message {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 6px;
+      display: none;
+    }
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
 </head>
 <body>
-    <h1>Register for Appraisells</h1>
+  <div class="container">
+    <h1>Register for Appraisells Auction</h1>
     
+    <!-- Registration Form -->
+    <form id="registrationForm">
+      
+      <!-- Personal Information Section -->
+      <div class="section">
+        <h3>Personal Information</h3>
+        <div class="form-group">
+          <label for="fullName">Full Name *</label>
+          <input type="text" id="fullName" name="fullName" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input type="text" id="phone" name="phone" required>
+        </div>
+      </div>
+
+      <!-- Shipping Address Section -->
+      <div class="section">
+        <h3>Shipping Address</h3>
+        <p><em>Required for delivery of any auction items you may win</em></p>
+        <div class="form-group">
+          <label for="address1">Address Line 1 *</label>
+          <input type="text" id="address1" name="address1" required>
+        </div>
+        <div class="form-group">
+          <label for="address2">Address Line 2</label>
+          <input type="text" id="address2" name="address2">
+        </div>
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input type="text" id="city" name="city" required>
+        </div>
+        <div class="form-group">
+          <label for="state">State/Province *</label>
+          <input type="text" id="state" name="state" required>
+        </div>
+        <div class="form-group">
+          <label for="zipCode">ZIP/Postal Code *</label>
+          <input type="text" id="zipCode" name="zipCode" required>
+        </div>
+        <div class="form-group">
+          <label for="country">Country *</label>
+          <select id="country" name="country" required>
+            <option value="">Select Country</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="UK">United Kingdom</option>
+            <option value="AU">Australia</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Payment Section -->
+      <div class="section payment-section">
+        <h3>Registration Payment</h3>
+        <div class="payment-amount">Registration Fee: 1 Pi Coin</div>
+        <p><strong>What this covers:</strong></p>
+        <ul>
+          <li>Access to participate in all Appraisells auctions</li>
+          <li>Professional appraisal documentation</li>
+          <li>Secure bidding platform access</li>
+          <li>Customer support throughout the auction process</li>
+        </ul>
+        <button type="button" id="payPiBtn" class="register-btn" style="background: #f39c12;">
+          Pay 1 Pi Coin to Register
+        </button>
+        <div id="paymentStatus" style="margin-top: 15px; font-weight: bold; text-align: center;"></div>
+      </div>
+
+      <!-- Terms and Conditions Section -->
+      <div class="section terms-section">
+        <h3>Terms and Conditions</h3>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="agreeShipping" name="agreeShipping" required>
+          <label for="agreeShipping">
+            I agree to pay for shipping and tracking costs for any auction items I win. 
+            Shipping costs will be calculated based on item size, weight, and destination.
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+          <label for="agreeTerms">
+            I agree to all Terms and Conditions of using Appraisells, including:
+            <ul style="margin: 10px 0 0 20px;">
+              <li>Bidding commitments are legally binding</li>
+              <li>Payment must be completed within 48 hours of winning</li>
+              <li>All sales are final - no returns or refunds</li>
+              <li>Appraisells reserves the right to verify bidder identity</li>
+              <li>Disputes will be resolved through arbitration</li>
+            </ul>
+          </label>
+        </div>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="agreePrivacy" name="agreePrivacy" required>
+          <label for="agreePrivacy">
+            I agree to the Privacy Policy and consent to my information being used 
+            for auction-related communications and order fulfillment.
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" class="register-btn" disabled>
+        Complete Registration
+      </button>
+      
+    </form>
+
+    <!-- Status Messages -->
+    <div id="statusMessage" class="status-message"></div>
+  </div>
+
+  <script>
+    // Initialize Pi SDK
+    Pi.init({ version: "2.0", sandbox: true });
+
+    let paymentCompleted = false;
+    let paymentId = null;
+
+    // Check if all required fields and agreements are completed
+    function validateForm() {
+      const requiredFields = ['fullName', 'email', 'phone', 'address1', 'city', 'state', 'zipCode', 'country'];
+      const requiredCheckboxes = ['agreeShipping', 'agreeTerms', 'agreePrivacy'];
+      
+      // Check required fields
+      const fieldsValid = requiredFields.every(fieldId => {
+        const field = document.getElementById(fieldId);
+        return field && field.value.trim() !== '';
+      });
+      
+      // Check required checkboxes
+      const checkboxesValid = requiredCheckboxes.every(checkboxId => {
+        const checkbox = document.getElementById(checkboxId);
+        return checkbox && checkbox.checked;
+      });
+      
+      // Enable submit button only if all requirements are met
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = !(fieldsValid && checkboxesValid && paymentCompleted);
+      
+      return fieldsValid && checkboxesValid && paymentCompleted;
+    }
+
+    // Add event listeners to all form elements
+    document.addEventListener('DOMContentLoaded', function() {
+      const formElements = document.querySelectorAll('input, select, textarea');
+      formElements.forEach(element => {
+        element.addEventListener('input', validateForm);
+        element.addEventListener('change', validateForm);
+      });
+    });
+
+    // Pi Payment Handler
+    document.getElementById('payPiBtn').onclick = function() {
+      const statusDiv = document.getElementById('paymentStatus');
+      statusDiv.textContent = 'Initiating payment...';
+      statusDiv.style.color = '#663399';
+      
+      Pi.createPayment({
+        amount: 1,
+        memo: "Appraisells Auction Registration Fee",
+        metadata: { 
+          purpose: "registration",
+          timestamp: new Date().toISOString()
+        }
+      }, {
+        onReadyForServerApproval: function(payment) {
+          paymentId = payment.identifier;
+          statusDiv.textContent = 'Payment pending approval...';
+          statusDiv.style.color = '#f39c12';
+          
+          // Call server to approve the payment
+          fetch('/approve-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentId: payment.identifier,
+              userEmail: document.getElementById('email').value
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              console.log('✅ Payment approved on server:', data);
+            } else {
+              console.error('❌ Server approval failed:', data.message);
+            }
+          })
+          .catch(error => {
+            console.error('❌ Server approval error:', error);
+          });
+        },
+        onReadyForServerCompletion: function(payment) {
+          statusDiv.textContent = 'Payment completed successfully!';
+          statusDiv.style.color = '#28a745';
+          paymentCompleted = true;
+          
+          // Update button
+          const payBtn = document.getElementById('payPiBtn');
+          payBtn.textContent = '✓ Payment Completed';
+          payBtn.disabled = true;
+          payBtn.style.background = '#28a745';
+          
+          validateForm();
+          
+          // Call server to complete the payment
+          fetch('/complete-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentId: payment.identifier,
+              userEmail: document.getElementById('email').value
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              console.log('✅ Payment completed on server:', data);
+              statusDiv.textContent = '✅ Registration payment verified!';
+            } else {
+              console.error('❌ Server completion failed:', data.message);
+              statusDiv.textContent = '❌ Payment verification failed';
+              statusDiv.style.color = '#dc3545';
+            }
+          })
+          .catch(error => {
+            console.error('❌ Server completion error:', error);
+            statusDiv.textContent = '❌ Payment verification failed';
+            statusDiv.style.color = '#dc3545';
+          });
+        },
+        onCancel: function(payment) {
+          statusDiv.textContent = 'Payment cancelled';
+          statusDiv.style.color = '#dc3545';
+          paymentCompleted = false;
+          validateForm();
+        },
+        onError: function(error, payment) {
+          statusDiv.textContent = 'Payment error: ' + error.message;
+          statusDiv.style.color = '#dc3545';
+          paymentCompleted = false;
+          validateForm();
+          console.error('Payment error:', error);
+        }
+      });
+    };
+
+    // Form submission handler
+    document.getElementById('registrationForm').onsubmit = function(e) {
+      e.preventDefault();
+      
+      if (!validateForm()) {
+        showStatus('Please complete all required fields and agreements', 'error');
+        return;
+      }
+      
+      // Collect form data
+      const formData = new FormData(e.target);
+      const registrationData = {
+        personalInfo: {
+          fullName: formData.get('fullName'),
+          email: formData.get('email'),
+          phone: formData.get('phone')
+        },
+        shippingAddress: {
+          address1: formData.get('address1'),
+          address2: formData.get('address2'),
+          city: formData.get('city'),
+          state: formData.get('state'),
+          zipCode: formData.get('zipCode'),
+          country: formData.get('country')
+        },
+        agreements: {
+          shipping: formData.get('agreeShipping') === 'on',
+          terms: formData.get('agreeTerms') === 'on',
+          privacy: formData.get('agreePrivacy') === 'on'
+        },
+        payment: {
+          paymentId: paymentId,
+          amount: 1,
+          completed: paymentCompleted
+        },
+        timestamp: new Date().toISOString()
+      };
+      
+      // Send registration data to server
+      fetch('/register-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registrationData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showStatus('✅ Registration completed successfully! You will receive a confirmation email shortly.', 'success');
+          
+          // Disable form
+          e.target.style.opacity = '0.6';
+          e.target.style.pointerEvents = 'none';
+          
+          console.log('✅ Registration successful:', data);
+        } else {
+          showStatus('❌ Registration failed: ' + data.message, 'error');
+          console.error('❌ Registration failed:', data);
+        }
+      })
+      .catch(error => {
+        console.error('❌ Registration error:', error);
+        showStatus('❌ Registration failed: Please try again', 'error');
+      });
+    };
+
+    function showStatus(message, type) {
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.textContent = message;
+      statusDiv.className = `status-message status-${type}`;
+      statusDiv.style.display = 'block';
+      
+      // Auto-hide success messages after 5 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          statusDiv.style.display = 'none';
+        }, 5000);
+      }
+    }
+  </script>
 </body>
 </html>
