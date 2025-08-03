@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -9,10 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // === MongoDB Connection ===
-mongoose.connect("mongodb://localhost:27017/appraisells", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect("mongodb://localhost:27017/appraisells");
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "❌ MongoDB connection error:"));
