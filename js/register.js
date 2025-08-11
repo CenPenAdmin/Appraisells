@@ -43,25 +43,25 @@ document.getElementById('registrationForm').onsubmit = function(e) {
     return;
   }
   
-  // Collect form data
-  const formData = new FormData(e.target);
+  // Collect form data directly from form elements
+  const form = e.target;
   const registrationData = {
     personalInfo: {
-      fullName: formData.get('fullName'),
-      email: formData.get('email')
+      fullName: form.fullName.value.trim(),
+      email: form.email.value.trim()
     },
     shippingAddress: {
-      address1: formData.get('address1'),
-      address2: formData.get('address2'),
-      city: formData.get('city'),
-      state: formData.get('state'),
-      zipCode: formData.get('zipCode'),
-      country: formData.get('country')
+      address1: form.address1.value.trim(),
+      address2: form.address2.value.trim(),
+      city: form.city.value.trim(),
+      state: form.state.value.trim(),
+      zipCode: form.zipCode.value.trim(),
+      country: form.country.value
     },
     agreements: {
-      shipping: formData.get('agreeShipping') === 'on',
-      terms: formData.get('agreeTerms') === 'on',
-      privacy: formData.get('agreePrivacy') === 'on'
+      shipping: form.agreeShipping.checked,
+      terms: form.agreeTerms.checked,
+      privacy: form.agreePrivacy.checked
     },
     registrationStatus: 'profile_completed',
     timestamp: new Date().toISOString()
@@ -69,14 +69,32 @@ document.getElementById('registrationForm').onsubmit = function(e) {
   
   console.log('📤 Sending registration data:', registrationData);
   
+  // Validate data before sending
+  console.log('🔍 Validation checks:');
+  console.log('- Full Name:', registrationData.personalInfo.fullName);
+  console.log('- Email:', registrationData.personalInfo.email);
+  console.log('- Address:', registrationData.shippingAddress.address1);
+  console.log('- Country:', registrationData.shippingAddress.country);
+  console.log('- Agreements:', registrationData.agreements);
+  
   // Send registration data to server
+  console.log('🌐 Attempting to connect to /register-profile...');
+  
   fetch('/register-profile', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(registrationData)
   })
   .then(res => {
-    console.log('📡 Server response status:', res.status);
+    console.log('📡 Server response received!');
+    console.log('📡 Response status:', res.status);
+    console.log('📡 Response ok:', res.ok);
+    console.log('📡 Response headers:', Object.fromEntries(res.headers.entries()));
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     return res.json();
   })
   .then(data => {
@@ -96,8 +114,22 @@ document.getElementById('registrationForm').onsubmit = function(e) {
     }
   })
   .catch(error => {
-    console.error('❌ Registration error:', error);
-    showStatus('❌ Registration failed: Please try again', 'error');
+    console.error('❌ Network/Registration error details:');
+    console.error('- Error type:', error.constructor.name);
+    console.error('- Error message:', error.message);
+    console.error('- Error stack:', error.stack);
+    console.error('- Full error object:', error);
+    
+    let errorMessage = 'Registration failed: ';
+    if (error.message.includes('Failed to fetch')) {
+      errorMessage += 'Cannot connect to server. Please check your connection.';
+    } else if (error.message.includes('HTTP')) {
+      errorMessage += 'Server error: ' + error.message;
+    } else {
+      errorMessage += error.message || 'Please try again';
+    }
+    
+    showStatus('❌ ' + errorMessage, 'error');
   });
 };
 
