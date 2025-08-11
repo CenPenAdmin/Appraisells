@@ -7,6 +7,13 @@ const axios = require("axios");
 const app = express();
 const port = process.env.PORT || 3000;
 
+// === Configuration ===
+// NGROK_URL: Update this when you get a new ngrok tunnel
+const NGROK_URL = "https://your-ngrok-url.ngrok.io"; // Update this with your ngrok URL
+const BASE_URL = process.env.NODE_ENV === 'production' ? NGROK_URL : `http://localhost:${port}`;
+
+console.log(`🔧 Base URL: ${BASE_URL}`);
+
 // === MongoDB Connection ===
 mongoose.connect("mongodb://localhost:27017/appraisells");
 
@@ -79,7 +86,7 @@ const PiPayment = mongoose.model("PiPayment", PiPaymentSchema);
 
 // === Middleware ===
 app.use(cors({
-  origin: true,
+  origin: [NGROK_URL, "http://localhost:3000", "https://localhost:3000"],
   credentials: true
 }));
 app.use(express.static(__dirname));
@@ -344,6 +351,11 @@ app.get("/api/status", async (req, res) => {
     
     res.json({
       success: true,
+      configuration: {
+        ngrokUrl: NGROK_URL,
+        baseUrl: BASE_URL,
+        environment: process.env.NODE_ENV || 'development'
+      },
       database: {
         status: dbStatus,
         name: 'appraisells',
@@ -366,6 +378,26 @@ app.get("/api/status", async (req, res) => {
   }
 });
 
+// === Configuration Endpoint ===
+app.get("/api/config", (req, res) => {
+  res.json({
+    success: true,
+    message: "When you get a new ngrok tunnel, update the NGROK_URL variable in server.js",
+    currentConfig: {
+      ngrokUrl: NGROK_URL,
+      baseUrl: BASE_URL,
+      port: port,
+      corsOrigins: [NGROK_URL, "http://localhost:3000", "https://localhost:3000"]
+    },
+    instructions: {
+      step1: "Get your new ngrok tunnel URL (e.g., https://abc123.ngrok.io)",
+      step2: "Update the NGROK_URL variable at the top of server.js",
+      step3: "Restart the server",
+      step4: "Verify the new URL works by visiting /api/config"
+    }
+  });
+});
+
 // === Error handling middleware ===
 app.use((error, req, res, next) => {
   console.error("❌ Server error:", error);
@@ -378,7 +410,10 @@ app.use((error, req, res, next) => {
 // === Start Server ===
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
-  console.log(`📊 Status endpoint: http://localhost:${port}/api/status`);
+  console.log(`🌐 Base URL: ${BASE_URL}`);
+  console.log(`📊 Status endpoint: ${BASE_URL}/api/status`);
+  console.log(`⚙️  Config endpoint: ${BASE_URL}/api/config`);
   console.log(`💾 MongoDB container: appraisells-mongo`);
   console.log(`🪙 Pi payments enabled for registration`);
+  console.log(`🔗 ngrok URL: ${NGROK_URL} ${NGROK_URL.includes('your-ngrok-url') ? '⚠️  UPDATE NEEDED!' : '✅'}`);
 });
