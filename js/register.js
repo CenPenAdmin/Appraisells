@@ -3,7 +3,7 @@ let profileCompleted = false;
 
 // Check if all required fields and agreements are completed
 function validateForm() {
-  const requiredFields = ['fullName', 'email', 'phone', 'address1', 'city', 'state', 'zipCode', 'country'];
+  const requiredFields = ['fullName', 'email', 'address1', 'city', 'state', 'zipCode', 'country'];
   const requiredCheckboxes = ['agreeShipping', 'agreeTerms', 'agreePrivacy'];
   
   // Check required fields
@@ -48,8 +48,7 @@ document.getElementById('registrationForm').onsubmit = function(e) {
   const registrationData = {
     personalInfo: {
       fullName: formData.get('fullName'),
-      email: formData.get('email'),
-      phone: formData.get('phone')
+      email: formData.get('email')
     },
     shippingAddress: {
       address1: formData.get('address1'),
@@ -68,14 +67,20 @@ document.getElementById('registrationForm').onsubmit = function(e) {
     timestamp: new Date().toISOString()
   };
   
+  console.log('📤 Sending registration data:', registrationData);
+  
   // Send registration data to server
   fetch('/register-profile', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(registrationData)
   })
-  .then(res => res.json())
+  .then(res => {
+    console.log('📡 Server response status:', res.status);
+    return res.json();
+  })
   .then(data => {
+    console.log('📡 Server response data:', data);
     if (data.success) {
       showStatus('✅ Profile completed successfully! Redirecting to payment...', 'success');
       

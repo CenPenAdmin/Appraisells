@@ -16,7 +16,7 @@ const UserRegistrationSchema = new mongoose.Schema({
   personalInfo: {
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true }
+    phone: { type: String, required: false }
   },
   shippingAddress: {
     address1: { type: String, required: true },

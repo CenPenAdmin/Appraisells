@@ -44,7 +44,13 @@ const registerProfile = async (req, res) => {
     } else {
       // Create new profile (without payment)
       const newProfile = new UserRegistration({
-        ...profileData,
+        personalInfo: {
+          fullName: profileData.personalInfo.fullName,
+          email: profileData.personalInfo.email,
+          phone: profileData.personalInfo.phone || ''  // Default to empty string if not provided
+        },
+        shippingAddress: profileData.shippingAddress,
+        agreements: profileData.agreements,
         registrationStatus: 'profile_completed',
         payment: {
           paymentId: 'pending',
