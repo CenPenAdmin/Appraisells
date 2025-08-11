@@ -86,17 +86,17 @@ document.getElementById('payPiBtn').addEventListener('click', async function() {
         console.log('✅ Payment ready for approval:', paymentId);
         currentPaymentId = paymentId;
         updateDebugInfo('debugPaymentId', paymentId);
-        showStatus('Payment created! Approving on server...', 'info');
+        showStatus('Payment created! Approving immediately...', 'info');
         
-        // Submit to server for approval
-        approvePaymentOnServer(paymentId);
+        // Approve immediately to prevent timeout
+        setTimeout(() => approvePaymentOnServer(paymentId), 100);
       },
       onReadyForServerCompletion: function(paymentId, txid) {
         console.log('✅ Payment ready for completion:', paymentId, txid);
         showStatus('Payment approved! Completing transaction...', 'info');
         
-        // Submit to server for completion
-        completePaymentOnServer(paymentId, txid);
+        // Complete immediately
+        setTimeout(() => completePaymentOnServer(paymentId, txid), 100);
       },
       onCancel: function(paymentId) {
         console.log('❌ Payment cancelled:', paymentId);
