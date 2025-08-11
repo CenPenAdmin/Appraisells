@@ -7,7 +7,6 @@ const path = require("path");
 const config = require('./backend/config');
 const { mongoose } = require('./backend/database');
 const { approvePayment, completePayment } = require('./backend/payment');
-const { registerProfile, registerUser, getRegistrationStatus } = require('./backend/registration');
 
 const app = express();
 
@@ -41,11 +40,6 @@ app.get("/", (req, res) => {
 // Payment endpoints
 app.post("/approve-payment", approvePayment);
 app.post("/complete-payment", completePayment);
-
-// Registration endpoints
-app.post("/register-profile", registerProfile);
-app.post("/register-user", registerUser);
-app.get("/registration-status/:email", getRegistrationStatus);
 
 // Status endpoint
 app.get("/api/status", async (req, res) => {
