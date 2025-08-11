@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment - Appraisells</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+  <div>
+    <a href="register.html">← Back to Registration</a>
+    
+    <h1>Complete Your Registration</h1>
+    
+    <!-- User Information -->
+    <div>
+      <h3>Profile Confirmed</h3>
+      <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+      <p><strong>Status:</strong> Profile Completed ✓</p>
+    </div>
+
+    <!-- Payment Section -->
+    <div>
+      <h2>Registration Payment</h2>
+      <div><strong>1 Pi Coin</strong></div>
+      
+      <p><strong>What's included:</strong></p>
+      <ul>
+        <li>Access to participate in all Appraisells auctions</li>
+        <li>Professional appraisal documentation</li>
+        <li>Secure bidding platform access</li>
+        <li>Customer support throughout the auction process</li>
+      </ul>
+      
+      <button type="button" id="payPiBtn">Pay 1 Pi Coin</button>
+      <div id="paymentStatus" style="display: none;"></div>
+    </div>
+
+    <!-- Debug Information -->
+    <div id="debugInfo" style="display: none;">
+      <h4>Debug Information:</h4>
+      <p><strong>Payment ID:</strong> <span id="debugPaymentId">None</span></p>
+      <p><strong>SDK Status:</strong> <span id="debugSdkStatus">Initializing...</span></p>
+      <p><strong>User Email:</strong> <span id="debugEmail">None</span></p>
+    </div>
+    
+    <button onclick="toggleDebug()">Toggle Debug Info</button>
+  </div>
+
+  <script src="js/payment.js"></script>
+</body>
+</html>
