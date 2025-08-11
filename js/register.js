@@ -1,6 +1,13 @@
 // register.js - Registration form functionality
 let profileCompleted = false;
 
+// Detect if running in Pi Browser and set appropriate base URL
+const isPiBrowser = window.navigator.userAgent.includes('PiBrowser');
+const baseURL = isPiBrowser ? 'https://cdb99f14b14d.ngrok-free.app' : '';
+
+console.log('🌐 Environment detected:', isPiBrowser ? 'Pi Browser' : 'Regular Browser');
+console.log('🌐 Base URL:', baseURL || 'localhost');
+
 // Check if all required fields and agreements are completed
 function validateForm() {
   const requiredFields = ['fullName', 'email', 'address1', 'city', 'state', 'zipCode', 'country'];
@@ -78,9 +85,10 @@ document.getElementById('registrationForm').onsubmit = function(e) {
   console.log('- Agreements:', registrationData.agreements);
   
   // Send registration data to server
-  console.log('🌐 Attempting to connect to /register-profile...');
+  const registrationURL = `${baseURL}/register-profile`;
+  console.log('🌐 Attempting to connect to:', registrationURL);
   
-  fetch('/register-profile', {
+  fetch(registrationURL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(registrationData)

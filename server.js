@@ -15,9 +15,12 @@ console.log(`🔧 Base URL: ${config.BASE_URL}`);
 
 // Middleware
 app.use(cors({
-  origin: config.CORS_ORIGINS,
-  credentials: true
+  origin: true, // Allow all origins for now
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
 app.use(express.static(__dirname));
 app.use(express.json());
 
