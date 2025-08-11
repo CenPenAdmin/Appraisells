@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 
 // === Configuration ===
 // NGROK_URL: Update this when you get a new ngrok tunnel
-const NGROK_URL = "https://your-ngrok-url.ngrok.io"; // Update this with your ngrok URL
+const NGROK_URL = "https://cdb99f14b14d.ngrok-free.app"; // Update this with your ngrok URL
 const BASE_URL = process.env.NODE_ENV === 'production' ? NGROK_URL : `http://localhost:${port}`;
 
 console.log(`🔧 Base URL: ${BASE_URL}`);
